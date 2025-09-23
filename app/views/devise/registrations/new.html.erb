@@ -1,0 +1,106 @@
+<div class="relative min-h-screen flex items-center justify-center bg-[#0a0a2a] text-white overflow-hidden font-poppins p-4">
+
+  <!-- Background Glow Circles -->
+  <div class="absolute top-0 -left-40 w-[400px] h-[400px] bg-yellow-400/10 rounded-full blur-3xl animate-float-slow"></div>
+  <div class="absolute bottom-0 -right-40 w-[400px] h-[400px] bg-purple-600/10 rounded-full blur-3xl animate-float-slow delay-1000"></div>
+
+  <!-- Sparkles -->
+  <div class="absolute inset-0 pointer-events-none">
+    <% 30.times do %>
+      <span class="absolute w-1 h-1 bg-yellow-300 rounded-full animate-sparkle"
+            style="top:<%= rand(100) %>%; left:<%= rand(100) %>%"></span>
+    <% end %>
+  </div>
+
+  <!-- Main Container -->
+  <div class="relative z-10 w-full max-w-md flex flex-col items-center space-y-6 text-center">
+
+    <!-- Devise Create Account Form -->
+    <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: {multipart: true, class: "w-full space-y-4"}) do |f| %>
+
+      <!-- Profile Image Upload with Pulse -->
+      <div class="relative w-32 h-32 rounded-full border-4 border-yellow-400 flex items-center justify-center shadow-[0_0_40px_rgba(255,215,0,0.5)] bg-white/5 backdrop-blur-md animate-pulse-slow mb-4">
+        <label for="profile_image" class="absolute inset-0 flex flex-col items-center justify-center cursor-pointer">
+          <%= image_tag(resource.profile_image.attached? ? url_for(resource.profile_image) : "https://via.placeholder.com/150",
+                        id: "preview-profile", class: "w-28 h-28 object-cover rounded-full") %>
+          <div class="absolute inset-0 flex flex-col items-center justify-center bg-black/20 rounded-full">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-400 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h4l2-3h6l2 3h4v14H3V7z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11a4 4 0 100 8 4 4 0 000-8z" />
+            </svg>
+            <span class="text-yellow-400 text-xs font-medium">Upload</span>
+          </div>
+          <%= f.file_field :profile_image, id: "profile_image", class: "hidden", accept: "image/*", onchange: "loadPreview(event)" %>
+        </label>
+      </div>
+
+      <!-- Title -->
+      <h1 class="text-4xl font-extrabold tracking-wide bg-gradient-to-r from-yellow-200 via-white to-yellow-400 bg-clip-text text-transparent shine-text">
+        CREATE ACCOUNT
+      </h1>
+
+      <!-- Subtitle -->
+      <p class="text-gray-300 text-base italic mb-4">Fill your details to get started</p>
+
+      <%= render "devise/shared/error_messages", resource: resource %>
+
+      <div class="flex flex-col space-y-3">
+        <%= f.label :phone, class: "text-left text-yellow-400 font-medium" %>
+        <%= f.text_field :phone, value: "9998887777", class: "w-full px-4 py-3 rounded-xl bg-white/15 border border-yellow-400/40 text-white placeholder-gray-400 transition focus:border-yellow-400 focus:ring focus:ring-yellow-400/30" %>
+
+        <%= f.label :email, class: "text-left text-yellow-400 font-medium" %>
+        <%= f.email_field :email, value: "example@email.com", class: "w-full px-4 py-3 rounded-xl bg-white/15 border border-yellow-400/40 text-white placeholder-gray-400 transition focus:border-yellow-400 focus:ring focus:ring-yellow-400/30" %>
+
+        <%= f.label :password, class: "text-left text-yellow-400 font-medium" %>
+        <%= f.password_field :password, value: "password123", class: "w-full px-4 py-3 rounded-xl bg-white/15 border border-yellow-400/40 text-white placeholder-gray-400 transition focus:border-yellow-400 focus:ring focus:ring-yellow-400/30" %>
+
+        <%= f.label :password_confirmation, class: "text-left text-yellow-400 font-medium" %>
+        <%= f.password_field :password_confirmation, value: "password123", class: "w-full px-4 py-3 rounded-xl bg-white/15 border border-yellow-400/40 text-white placeholder-gray-400 transition focus:border-yellow-400 focus:ring focus:ring-yellow-400/30" %>
+      </div>
+
+      <div class="pt-4">
+        <%= f.submit "Done", class: "w-full py-3 bg-gradient-to-r from-yellow-400 via-orange-400 to-pink-500 text-black font-bold rounded-xl shadow-lg hover:scale-105 transform transition" %>
+      </div>
+    <% end %>
+
+    <%= link_to "Cancle", root_path, class: "mt-4 text-yellow-400 hover:underline text-xl" %>
+
+  </div>
+</div>
+
+<script>
+function loadPreview(event){
+  const preview = document.getElementById('preview-profile');
+  preview.src = URL.createObjectURL(event.target.files[0]);
+}
+</script>
+
+<style>
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+.animate-float-slow { animation: float-slow 10s ease-in-out infinite; }
+.delay-1000 { animation-delay: 1s; }
+
+@keyframes pulse-slow {
+  0%, 100% { box-shadow: 0 0 40px rgba(255,215,0,0.4); }
+  50% { box-shadow: 0 0 70px rgba(255,215,0,0.8); }
+}
+.animate-pulse-slow { animation: pulse-slow 5s infinite; }
+
+@keyframes sparkle {
+  0%, 100% { opacity: 0; transform: scale(0); }
+  50% { opacity: 1; transform: scale(1); }
+}
+.animate-sparkle { animation: sparkle 3s infinite; }
+
+.shine-text {
+  background-size: 200% auto;
+  animation: shine 2.5s linear infinite;
+}
+@keyframes shine {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+</style>

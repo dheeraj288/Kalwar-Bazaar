@@ -45,8 +45,9 @@
       <%= render "devise/shared/error_messages", resource: resource %>
 
       <div class="flex flex-col space-y-3">
-        <%= f.label :phone, class: "text-left text-yellow-400 font-medium" %>
-        <%= f.text_field :phone, value: "9998887777", class: "w-full px-4 py-3 rounded-xl bg-white/15 border border-yellow-400/40 text-white placeholder-gray-400 transition focus:border-yellow-400 focus:ring focus:ring-yellow-400/30" %>
+        <!-- Phone number with intl-tel-input -->
+        <%= f.label :phone_number, class: "text-left text-yellow-400 font-medium" %>
+        <%= f.telephone_field :phone_number, id: "phone", placeholder: "Enter phone number", class: "w-full px-4 py-3 rounded-xl bg-white/15 border border-yellow-400/40 text-white placeholder-gray-400 transition focus:border-yellow-400 focus:ring focus:ring-yellow-400/30" %>
 
         <%= f.label :email, class: "text-left text-yellow-400 font-medium" %>
         <%= f.email_field :email, value: "example@email.com", class: "w-full px-4 py-3 rounded-xl bg-white/15 border border-yellow-400/40 text-white placeholder-gray-400 transition focus:border-yellow-400 focus:ring focus:ring-yellow-400/30" %>
@@ -73,6 +74,32 @@ function loadPreview(event){
   const preview = document.getElementById('preview-profile');
   preview.src = URL.createObjectURL(event.target.files[0]);
 }
+
+// intl-tel-input initialization
+document.addEventListener("turbo:load", () => {
+  const input = document.querySelector("#phone");
+  if (input) {
+    window.intlTelInput(input, {
+      initialCountry: "auto",
+      geoIpLookup: function (callback) {
+        fetch("https://ipinfo.io/json?token=36d2a4fd9c6534")
+          .then((resp) => resp.json())
+          .then((resp) => callback(resp.country))
+          .catch(() => callback("in"));
+      },
+      utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+      
+      // ✅ Improved options
+      autoHideDialCode: false,      // Dial code hamesha show ho
+      nationalMode: false,           // Full international format
+      separateDialCode: true,        // Flag + code alag dikhe
+      placeholderNumberType: "MOBILE", // Mobile number placeholder
+      preferredCountries: ["in","us","gb"], // Top countries pehle dikhen
+      dropdownContainer: document.body, // Scrollable dropdown properly body me render
+    });
+  }
+});
+
 </script>
 
 <style>
@@ -102,5 +129,17 @@ function loadPreview(event){
 @keyframes shine {
   0% { background-position: -200% center; }
   100% { background-position: 200% center; }
+}
+
+.iti__country-list {
+  max-height: 250px !important;
+  overflow-y: auto !important;
+  font-size: 0.95rem;
+}
+
+/* Make flags slightly bigger */
+.iti__flag {
+  width: 22px;
+  height: 16px;
 }
 </style>

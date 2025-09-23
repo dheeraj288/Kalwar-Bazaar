@@ -38,6 +38,11 @@
       </div>
 
       <div class="flex flex-col space-y-3">
+        <%= f.label :phone_number, class: "text-left text-yellow-400 font-medium" %>
+        <%= f.telephone_field :phone_number, id: "phone", value: "", placeholder: "Enter your phone number", class: "w-full px-4 py-3 rounded-xl bg-white/15 border border-yellow-400/40 text-white placeholder-yellow-200/50 transition focus:border-yellow-400 focus:ring focus:ring-yellow-400/30 focus:outline-none" %>
+      </div>
+
+      <div class="flex flex-col space-y-3">
         <%= f.label :password, class: "text-left text-yellow-400 font-medium" %>
         <%= f.password_field :password, placeholder: "Enter your password", class: "w-full px-4 py-3 rounded-xl bg-white/15 border border-yellow-400/40 text-white placeholder-yellow-200/50 transition focus:border-yellow-400 focus:ring focus:ring-yellow-400/30 focus:outline-none" %>
       </div>
@@ -52,30 +57,51 @@
   </div>
 </div>
 
+<!-- Include intl-tel-input CDN -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"></script>
+
+<!-- Init intl-tel-input -->
+<script>
+document.addEventListener("turbo:load", function () {
+  const input = document.querySelector("#phone");
+  if (input) {
+    window.intlTelInput(input, {
+      initialCountry: "auto",
+      geoIpLookup: function(callback) {
+        fetch("https://ipinfo.io/json?token=36d2a4fd9c6534")
+          .then(resp => resp.json())
+          .then(resp => callback(resp.country))
+          .catch(() => callback("in"));
+      },
+      separateDialCode: true,
+      autoHideDialCode: false,
+      nationalMode: false,
+      preferredCountries: ["in","us","gb"],
+      dropdownContainer: document.body,
+      placeholderNumberType: "MOBILE"
+    });
+  }
+});
+</script>
+
 <!-- Animations -->
 <style>
-@keyframes float-slow {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-20px); }
-}
-.animate-float-slow { animation: float-slow 12s ease-in-out infinite; }
-.delay-1000 { animation-delay: 1s; }
+@keyframes float-slow { 0%,100%{transform:translateY(0);}50%{transform:translateY(-20px);} }
+.animate-float-slow{animation:float-slow 12s ease-in-out infinite;}
+.delay-1000{animation-delay:1s;}
 
-@keyframes pulse-slow {
-  0%, 100% { box-shadow: 0 0 40px rgba(255,215,0,0.5); }
-  50% { box-shadow: 0 0 70px rgba(255,215,0,0.8); }
-}
-.animate-pulse-slow { animation: pulse-slow 5s infinite; }
+@keyframes pulse-slow{0%,100%{box-shadow:0 0 40px rgba(255,215,0,0.5);}50%{box-shadow:0 0 70px rgba(255,215,0,0.8);}}
+.animate-pulse-slow{animation:pulse-slow 5s infinite;}
 
-@keyframes sparkle {
-  0%, 100% { opacity: 0; transform: scale(0); }
-  50% { opacity: 1; transform: scale(1); }
-}
-.animate-sparkle { animation: sparkle infinite; }
+@keyframes sparkle{0%,100%{opacity:0;transform:scale(0);}50%{opacity:1;transform:scale(1);}}
+.animate-sparkle{animation:sparkle infinite;}
 
-@keyframes shine {
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
-}
-.animate-shine { background-size: 200% auto; animation: shine 2.5s linear infinite; }
+@keyframes shine{0%{background-position:-200% center;}100%{background-position:200% center;}}
+.animate-shine{background-size:200% auto; animation:shine 2.5s linear infinite;}
+
+/* intl-tel-input styling tweaks */
+.iti__country-list { max-height: 250px !important; overflow-y: auto !important; font-size: 0.95rem; }
+.iti__flag { width:22px; height:16px; }
 </style>

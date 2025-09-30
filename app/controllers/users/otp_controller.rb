@@ -1,12 +1,10 @@
 class Users::OtpController < ApplicationController
   before_action :set_user_from_session
 
-  # OTP page
   def new
     redirect_to root_path, notice: "Already verified!" if @user.otp_verified?
   end
 
-  # Verify OTP
   def create
     if @user.otp_valid?(params[:otp_code])
       @user.update!(otp_verified: true)
@@ -19,7 +17,6 @@ class Users::OtpController < ApplicationController
     end
   end
 
-  # Resend OTP
   def resend
     @user.generate_otp(send_via: params[:via]&.to_sym || :email)
     redirect_to users_verify_otp_path, notice: "OTP resent!"

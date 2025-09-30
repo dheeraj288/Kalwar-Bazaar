@@ -70,5 +70,6 @@ group :test do
 end
 
 gem "devise", "~> 4.9"
-# Gemfile
 gem 'httparty'
+gem 'pry'
+gem 'pry-theme'
